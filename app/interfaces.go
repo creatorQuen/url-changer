@@ -9,5 +9,5 @@ type KeyGenerator interface {
 
 type UrlSaver interface {
 	Save(domain.LongURL, string) error
-	Get(string) (string, error)
+	GetFullString(string) (string, error)
 }
