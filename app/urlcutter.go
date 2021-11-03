@@ -14,9 +14,9 @@ func NewUrlCutterService(keyGenerator localservices.KeyGenerator, repo UrlSaver)
 	return &urlCutterService{keyGenerator: keyGenerator, repo: repo}
 }
 
-func (u *urlCutterService) MakeKey(s string) (string, error) {
+func (u *urlCutterService) MakeKey(inputUrlString string) (string, error) {
 	key := u.keyGenerator.Generate()
-	url := domain.LongURL{LongURLData: s}
+	url := domain.LongURL{LongURLData: inputUrlString}
 	err := u.repo.Save(url, key)
 	if err != nil {
 		return "", err
@@ -24,8 +24,8 @@ func (u *urlCutterService) MakeKey(s string) (string, error) {
 	return key, nil
 }
 
-func (u *urlCutterService) GetURL(s string) (string, error) {
-	url, err := u.repo.Get(s)
+func (u *urlCutterService) GetURL(keyString string) (string, error) {
+	url, err := u.repo.Get(keyString)
 	if err != nil {
 		return "", err
 	}

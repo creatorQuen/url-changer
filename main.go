@@ -2,20 +2,20 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
+	_ "github.com/lib/pq"
 	"url-changer/app"
 	"url-changer/infrastructure/httphandlers"
 	"url-changer/infrastructure/localservices"
-	repo2 "url-changer/infrastructure/repo"
+	"url-changer/infrastructure/repo"
 )
 
 func main() {
 	e := echo.New()
 
-	repo := repo2.NewKeySaver()
+	repo := repo.NewKeySaver()
 
-	geyGeneratorService := localservices.NewKeyGenerator()
-
-	service := app.NewUrlCutterService(*geyGeneratorService, repo)
+	keyGeneratorService := localservices.NewKeyGenerator()
+	service := app.NewUrlCutterService(*keyGeneratorService, repo)
 
 	handler := httphandlers.NewUrlGenerator(service)
 

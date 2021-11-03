@@ -11,6 +11,10 @@ type urlGenerator struct {
 	service app.KeyGenerator
 }
 
+type UrlToCut struct {
+	LongUrl string `json:"long_url"`
+}
+
 func NewUrlGenerator(service app.KeyGenerator) *urlGenerator {
 	return &urlGenerator{service: service}
 }
@@ -30,18 +34,14 @@ func (u *urlGenerator) GetUrl(ctx echo.Context) error {
 }
 
 func (u *urlGenerator) UrlCutter(ctx echo.Context) error {
+
 	var urlToCut UrlToCut
 	err := ctx.Bind(&urlToCut)
 	if err != nil {
 		log.Print("Bind returned error")
 		return ctx.String(http.StatusBadRequest, err.Error())
 	}
-
 	key, err := u.service.MakeKey(urlToCut.LongUrl)
 
 	return ctx.JSON(http.StatusOK, key)
-}
-
-type UrlToCut struct {
-	LongUrl string `json:"long_url"`
 }
