@@ -25,7 +25,7 @@ func (u *urlCutterService) MakeKey(inputUrlString string) (string, error) {
 }
 
 func (u *urlCutterService) GetURL(keyString string) (string, error) {
-	url, err := u.repo.Get(keyString)
+	url, err := u.repo.GetFullString(keyString)
 	if err != nil {
 		return "", err
 	}

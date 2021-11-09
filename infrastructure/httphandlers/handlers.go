@@ -34,14 +34,18 @@ func (u *urlGenerator) GetUrl(ctx echo.Context) error {
 }
 
 func (u *urlGenerator) UrlCutter(ctx echo.Context) error {
-
 	var urlToCut UrlToCut
 	err := ctx.Bind(&urlToCut)
 	if err != nil {
-		log.Print("Bind returned error")
-		return ctx.String(http.StatusBadRequest, err.Error())
+		log.Error("failed to bind UrlCutter data: ", err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 	key, err := u.service.MakeKey(urlToCut.LongUrl)
+
+	if err != nil {
+		log.Error("service.MakeKey: ", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
 
 	return ctx.JSON(http.StatusOK, key)
 }
