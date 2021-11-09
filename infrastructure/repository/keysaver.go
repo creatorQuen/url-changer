@@ -18,8 +18,8 @@ func NewKeySaver(repo *sql.DB) *keySaver {
 	return &keySaver{repository: repo}
 }
 
-func (k keySaver) GetFullString(stringChanged string) (string, error) {
-	selectScript := "SELECT \"longUrl\" FROM \"ulrs\" WHERE \"shortUrl\" =$1"
+func (k *keySaver) GetFullString(stringChanged string) (string, error) {
+	selectScript := `SELECT "longUrl" FROM "ulrs" WHERE "shortUrl" =$1`
 	variable, err := k.repository.Query(selectScript, stringChanged)
 	defer variable.Close()
 
