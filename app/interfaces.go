@@ -8,6 +8,7 @@ type KeyGenerator interface {
 	GetURL(string) (string, error)
 }
 
+//// repo
 type UrlSaver interface {
 	Save(domain.LongURL, string) error
 	GetFullString(string) (string, error)

@@ -22,7 +22,7 @@ func NewUrlGenerator(service app.KeyGenerator) *urlGenerator {
 func (u *urlGenerator) GetUrl(ctx echo.Context) error {
 	key := ctx.Param("key")
 	if key == "" {
-		return ctx.JSON(http.StatusBadRequest, "key invalid")
+		return echo.NewHTTPError(http.StatusBadRequest, "key invalid")
 	}
 
 	url, err := u.service.GetURL(key)

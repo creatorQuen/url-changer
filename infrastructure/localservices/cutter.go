@@ -2,14 +2,12 @@ package localservices
 
 import (
 	"encoding/hex"
+	"log"
 	"math/rand"
 )
 
 type KeyGenerator struct {
-}
-
-func NewKeyGenerator() *KeyGenerator {
-	return &KeyGenerator{}
+	myRand myRandInterface
 }
 
 func (c KeyGenerator) Generate() string {
@@ -19,4 +17,15 @@ func (c KeyGenerator) Generate() string {
 	}
 	key := hex.EncodeToString(bytes)
 	return key
+}
+
+type myRand struct{}
+
+func NewKeyGenerator() *KeyGenerator {
+	myRand := new(myRand)
+	return &KeyGenerator{myRand: myRand}
+}
+
+func (mr *myRand) Read(b []byte) (n int, err error) {
+	return rand.Read(b)
 }

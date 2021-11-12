@@ -6,11 +6,11 @@ import (
 )
 
 type urlCutterService struct {
-	keyGenerator localservices.KeyGenerator
+	keyGenerator localservices.ICutter
 	repo         UrlSaver
 }
 
-func NewUrlCutterService(keyGenerator localservices.KeyGenerator, repo UrlSaver) *urlCutterService {
+func NewUrlCutterService(keyGenerator localservices.ICutter, repo UrlSaver) *urlCutterService {
 	return &urlCutterService{keyGenerator: keyGenerator, repo: repo}
 }
 

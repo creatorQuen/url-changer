@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
+	"log"
 	"url-changer/app"
 	"url-changer/infrastructure/httphandlers"
 	"url-changer/infrastructure/localservices"
@@ -14,12 +15,17 @@ import (
 func main() {
 	e := echo.New()
 	db := ConnectDB()
-	defer db.Close()
+	defer func() {
+		errorDb := db.Close()
+		if errorDb != nil {
+			log.Fatal("Database connection err: ", errorDb)
+		}
+	}()
 
 	repo := repository.NewKeySaver(db)
 
 	keyGeneratorService := localservices.NewKeyGenerator()
-	service := app.NewUrlCutterService(*keyGeneratorService, repo)
+	service := app.NewUrlCutterService(keyGeneratorService, repo)
 
 	handler := httphandlers.NewUrlGenerator(service)
 
@@ -39,7 +45,7 @@ func ConnectDB() (db *sql.DB) {
 
 func CheckError(err error) {
 	if err != nil {
-		panic(err)
+		log.Fatal("Error is check: ", err)
 	}
 }
 
@@ -47,6 +53,6 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "admin"
+	password = "789456"
 	dbname   = "URLchanger"
 )
