@@ -7,14 +7,21 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"url-changer/app"
+	"url-changer/config"
 	"url-changer/infrastructure/httphandlers"
 	"url-changer/infrastructure/localservices"
 	"url-changer/infrastructure/repository"
 )
 
 func main() {
+	var conf config.UrlChangerConfig
+	err := config.GetConfig(&conf)
+	if err != nil {
+		log.Fatal("Failed to load config: ", err)
+	}
+
 	e := echo.New()
-	db := ConnectDB()
+	db := ConnectDB(&conf)
 	defer func() {
 		errorDb := db.Close()
 		if errorDb != nil {
@@ -31,11 +38,11 @@ func main() {
 
 	e.POST("/urlcutter", handler.UrlCutter)
 	e.GET("/:key", handler.GetUrl)
-	e.Logger.Fatal(e.Start(":8088"))
+	e.Logger.Fatal(e.Start(":" + conf.Port))
 }
 
-func ConnectDB() (db *sql.DB) {
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+func ConnectDB(conf *config.UrlChangerConfig) (db *sql.DB) {
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", conf.Host, conf.DBPort, conf.DBUser, conf.Password, conf.DBName)
 	db, err := sql.Open("postgres", psqlconn)
 	CheckError(err)
 	err = db.Ping()
@@ -48,11 +55,3 @@ func CheckError(err error) {
 		log.Fatal("Error is check: ", err)
 	}
 }
-
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "789456"
-	dbname   = "URLchanger"
-)
