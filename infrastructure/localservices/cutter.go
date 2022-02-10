@@ -16,6 +16,7 @@ func (c KeyGenerator) Generate() string {
 		panic(err.Error())
 	}
 	key := hex.EncodeToString(bytes)
+
 	return key
 }
 
