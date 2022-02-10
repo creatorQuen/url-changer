@@ -10,10 +10,11 @@ type KeyGenerator struct {
 	myRand myRandInterface
 }
 
-func (c KeyGenerator) Generate() string {
-	bytes := make([]byte, 6)
-	if _, err := rand.Read(bytes); err != nil {
-		panic(err.Error())
+func (c *KeyGenerator) Generate() string {
+	bytes := make([]byte, 8)
+	if _, err := c.myRand.Read(bytes); err != nil {
+		log.Fatal("Generate: ", err)
+		return "Generate error."
 	}
 	key := hex.EncodeToString(bytes)
 
